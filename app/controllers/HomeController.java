@@ -2,6 +2,7 @@ package controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import models.ConnectionRequest;
 import models.Profile;
 import models.User;
 import play.mvc.Controller;
@@ -52,10 +53,56 @@ public class HomeController extends Controller {
 
                         }).collect(Collectors.toList())
                 )
-
         );
 
-        return ok();
+        data.set("connectionRequests",
+
+                objectMapper.valueToTree(
+
+                        user.connectionRequestsRecieved.stream().filter(x->x.status.equals(ConnectionRequest.Status.WAITING)).
+                                map(connectionRequestRec->{
+
+                            ObjectNode connectionReqJson= objectMapper.createObjectNode();
+
+                            User conReqUser = User.find.byId(connectionRequestRec.id);
+                            Profile senderProfile = Profile.find.byId(connectionRequestRec.sender.profile.id);
+
+                            connectionReqJson.put("id",connectionRequestRec.id);
+                            connectionReqJson.put("email",conReqUser.email);
+                            connectionReqJson.put("firstname",senderProfile.firstName);
+
+                            return connectionReqJson;
+
+                        }).collect(Collectors.toList())
+                )
+        );
+
+        data.set("suggestions",
+
+                objectMapper.valueToTree(
+
+                        User.find.all().stream().filter(x->!user.equals(x)).
+                                filter(x->!user.connections.contains(x)).
+                                filter(x->!user.connectionRequestsRecieved.stream().map(y->y.sender).collect(Collectors.toList()).contains(x)).
+                                filter(x->!user.connectionRequestsSent.stream().map(y->y.receiver).collect(Collectors.toList()).contains(x)).
+                                map(suggestion->{
+
+                                    ObjectNode suggJson= objectMapper.createObjectNode();
+
+                                    User suggUser = User.find.byId(suggestion.id);
+                                    Profile senderProfile = Profile.find.byId(suggestion.profile.id);
+
+                                    suggJson.put("id",suggestion.id);
+                                    suggJson.put("email",suggUser.email);
+                                    suggJson.put("firstname",senderProfile.firstName);
+
+                                    return suggJson;
+
+                                }).collect(Collectors.toList())
+                )
+        );
+
+        return ok(data);
     }
 
 }

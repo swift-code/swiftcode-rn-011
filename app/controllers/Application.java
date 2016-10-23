@@ -19,10 +19,13 @@ import javax.inject.Inject;
  * Created by lubuntu on 10/22/16.
  */
 public class Application extends Controller {
+
     @Inject
     FormFactory formFactory;
+
     @Inject
     ObjectMapper objectMapper;
+
     public Result login()
     {
         Form<LoginForm> loginForm = formFactory.form(LoginForm.class).bindFromRequest();

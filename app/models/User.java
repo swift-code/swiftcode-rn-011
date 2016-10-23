@@ -12,20 +12,26 @@ import java.util.Set;
  */
 @Entity
 public class User extends Model {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     public Long id;
+
     public String email;
     public String password;
+
     @OneToOne
     public Profile profile;
+
     @ManyToMany
     @JoinTable( name = "user_connection",
             joinColumns = { @JoinColumn( name = "user_id" )},
             inverseJoinColumns= { @JoinColumn( name = "connection_id" )})
     public Set<User> connections;
+
     @OneToMany(mappedBy = "sender")
     public List<ConnectionRequest> connectionRequestsSent;
+
     @OneToMany(mappedBy = "receiver")
     public List<ConnectionRequest> connectionRequestsRecieved;
 

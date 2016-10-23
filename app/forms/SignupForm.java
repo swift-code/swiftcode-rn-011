@@ -12,12 +12,16 @@ import java.util.List;
  * Created by lubuntu on 10/22/16.
  */
 public class SignupForm {
+
     @Constraints.Required
     public String email;
+
     @Constraints.Required
     public String password;
+
     @Constraints.Required
     public String firstName;
+
     public List<ValidationError> Validate()
     {
         List<ValidationError>  errors = new ArrayList<>();
