@@ -22,7 +22,7 @@ public class SignupForm {
     @Constraints.Required
     public String firstName;
 
-    public List<ValidationError> Validate()
+    public List<ValidationError> validate()
     {
         List<ValidationError>  errors = new ArrayList<>();
         User user= User.find.where().eq("email", email).findUnique();
